@@ -86,7 +86,12 @@ def softmax_loss(Z, y):
         Average softmax loss over the sample.
     """
     ### BEGIN YOUR CODE
-    pass
+    row_num = y.shape[0]
+    Zy = np.empty_like(y, dtype=np.float32)
+    for i in range(row_num):
+        Zy[i] = Z[i][y[i]]
+    ret_arr = np.log(np.sum(np.exp(Z), axis=1)).reshape([row_num,]) - Zy
+    return ret_arr.mean()
     ### END YOUR CODE
 
 
