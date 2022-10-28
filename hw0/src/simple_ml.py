@@ -66,6 +66,7 @@ def parse_mnist(image_filename, label_filename):
     img_arr.resize([sample_num, 28 * 28])
     label_arr.resize([sample_num,])
     
+    # print(np.sum(img_arr[:100]))
     return img_arr, label_arr
     ### END YOUR CODE
 
@@ -114,7 +115,22 @@ def softmax_regression_epoch(X, y, theta, lr = 0.1, batch=100):
         None
     """
     ### BEGIN YOUR CODE
-    pass
+    # X = m * n
+    # Iy = m * k
+    # theta = n * k
+    m, k = X.shape[0], theta.shape[1]
+    Iy = np.zeros([m, k], dtype=np.uint8)
+    for i in range(m):
+        Iy[i, y[i]] = 1
+    for i in range((m + batch - 1) // batch):
+        start, end = i * batch, min((i + 1) * batch, m)
+        local_batch = end - start
+        batch_X = X[start:end, :]
+        batch_Z = np.exp(batch_X@theta)
+        for i in range(local_batch):
+            batch_Z[i] /= np.sum(batch_Z[i])
+        batch_Iy = Iy[start:end, :]
+        theta -= (lr / local_batch) * np.transpose(batch_X)@(batch_Z - batch_Iy)
     ### END YOUR CODE
 
 
